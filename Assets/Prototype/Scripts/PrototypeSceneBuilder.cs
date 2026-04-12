@@ -73,7 +73,7 @@ public class PrototypeSceneBuilder : MonoBehaviour
 
         root = new GameObject("PrototypeSceneRoot");
 
-        transform.position = new Vector3(-6.2f, 1.65f, 0.8f);
+        transform.position = new Vector3(-6.2f, 1.95f, 0.8f);
         transform.rotation = Quaternion.Euler(0f, 82f, 0f);
 
         CreateDirectionalLight();
@@ -125,11 +125,16 @@ public class PrototypeSceneBuilder : MonoBehaviour
     private void BuildSaunaCorridor()
     {
         Transform corridor = CreateRoomShell("SaunaCorridor", new Vector3(17f, 0f, 0f), 16f, 4f, 7f, saunaMaterial, new Color(0.49f, 0.31f, 0.2f));
+        Transform turnCorridor = CreateRoomShell("SaunaTurnCorridor", new Vector3(23f, 0f, -7.5f), 7f, 4f, 12f, saunaMaterial, new Color(0.46f, 0.29f, 0.19f));
+
         RemoveWall(corridor, "WallLeft");
         RemoveWall(corridor, "WallRight");
+        RemoveWall(turnCorridor, "WallFront");
+        RemoveWall(turnCorridor, "WallBack");
 
         CreateDoorFrame(corridor, new Vector3(-8f, 1.6f, 0f), new Vector3(0.2f, 3.2f, 3.2f), cafeteriaMaterial);
-        CreateDoorFrame(corridor, new Vector3(8f, 1.6f, 0f), new Vector3(0.2f, 3.2f, 3.2f), restroomMaterial);
+        CreateDoorFrame(corridor, new Vector3(8f, 1.6f, 0f), new Vector3(0.2f, 3.2f, 3.2f), saunaMaterial);
+        CreateDoorFrame(turnCorridor, new Vector3(0f, 1.6f, 6f), new Vector3(3.2f, 3.2f, 0.2f), saunaMaterial);
 
         CreatePrimitive("BenchLeft", PrimitiveType.Cube, cafeteriaMaterial, new Vector3(-1.5f, 0.45f, -2.2f), new Vector3(3f, 0.9f, 0.7f), corridor);
         CreatePrimitive("BenchRight", PrimitiveType.Cube, cafeteriaMaterial, new Vector3(2.4f, 0.45f, 2.1f), new Vector3(3.2f, 0.9f, 0.7f), corridor);
@@ -141,17 +146,21 @@ public class PrototypeSceneBuilder : MonoBehaviour
             CreatePrimitive("Locker_" + i, PrimitiveType.Cube, metalMaterial, new Vector3(4.2f, 1.2f, -2.5f + i * 1.8f), new Vector3(1.1f, 2.4f, 0.65f), corridor);
         }
 
+        CreatePrimitive("TurnBench", PrimitiveType.Cube, cafeteriaMaterial, new Vector3(-1.8f, 0.45f, 3.6f), new Vector3(2.4f, 0.9f, 0.7f), turnCorridor);
+        CreatePrimitive("TurnShelf", PrimitiveType.Cube, metalMaterial, new Vector3(1.4f, 1.8f, -4.6f), new Vector3(2f, 0.2f, 0.5f), turnCorridor);
         CreateSteamPanel(corridor, new Vector3(-0.2f, 1.25f, -3.3f), new Vector3(3f, 2.2f, 0.2f));
+        CreateSteamPanel(turnCorridor, new Vector3(3.2f, 1.25f, 0.2f), new Vector3(0.2f, 2.2f, 3f));
         CreateSign(corridor, "SAUNA", new Vector3(-6f, 3.1f, -3f), Color.white);
         CreateSign(corridor, "RESTROOM ->", new Vector3(3.9f, 3.1f, -3f), Color.white);
+        CreateSign(turnCorridor, "TURN LEFT", new Vector3(0f, 3.1f, 4.9f), Color.white);
     }
 
     private void BuildRestroom()
     {
-        Transform restroom = CreateRoomShell("MensRestroom", new Vector3(31f, 0f, 0f), 12f, 4f, 8f, restroomMaterial, new Color(0.77f, 0.8f, 0.82f));
-        RemoveWall(restroom, "WallLeft");
+        Transform restroom = CreateRoomShell("MensRestroom", new Vector3(23f, 0f, -15f), 12f, 4f, 8f, restroomMaterial, new Color(0.77f, 0.8f, 0.82f));
+        RemoveWall(restroom, "WallFront");
 
-        CreateDoorFrame(restroom, new Vector3(-6f, 1.6f, 0f), new Vector3(0.2f, 3.2f, 2.8f), saunaMaterial);
+        CreateDoorFrame(restroom, new Vector3(0f, 1.6f, 4f), new Vector3(2.8f, 3.2f, 0.2f), saunaMaterial);
         CreatePrimitive("MirrorStrip", PrimitiveType.Cube, glassMaterial, new Vector3(-1.2f, 2f, -3.7f), new Vector3(4.4f, 1.3f, 0.08f), restroom);
         CreatePrimitive("SinkCounter", PrimitiveType.Cube, metalMaterial, new Vector3(-1.2f, 0.92f, -3.3f), new Vector3(4.6f, 0.95f, 1f), restroom);
 
@@ -196,10 +205,10 @@ public class PrototypeSceneBuilder : MonoBehaviour
         CreatePrimitive("TableLegC", PrimitiveType.Cube, metalMaterial, tablePosition + new Vector3(0.85f, -0.5f, -0.45f), new Vector3(0.12f, 1f, 0.12f), parent);
         CreatePrimitive("TableLegD", PrimitiveType.Cube, metalMaterial, tablePosition + new Vector3(-0.85f, -0.5f, -0.45f), new Vector3(0.12f, 1f, 0.12f), parent);
 
-        CreateLunchChair(parent, tablePosition + new Vector3(0f, 0f, -1.05f));
-        CreateLunchChair(parent, tablePosition + new Vector3(0f, 0f, 1.05f));
-        CreateLunchChair(parent, tablePosition + new Vector3(-1.25f, 0f, 0.2f), 90f);
-        CreateLunchChair(parent, tablePosition + new Vector3(1.25f, 0f, -0.2f), -90f);
+        CreateLunchChair(parent, new Vector3(tablePosition.x, 0.1f, tablePosition.z - 1.05f));
+        CreateLunchChair(parent, new Vector3(tablePosition.x, 0.1f, tablePosition.z + 1.05f));
+        CreateLunchChair(parent, new Vector3(tablePosition.x - 1.25f, 0.1f, tablePosition.z + 0.2f), 90f);
+        CreateLunchChair(parent, new Vector3(tablePosition.x + 1.25f, 0.1f, tablePosition.z - 0.2f), -90f);
 
         CreateTray(parent, tablePosition + new Vector3(-0.45f, 1.05f, 0.18f));
         CreateTray(parent, tablePosition + new Vector3(0.35f, 1.05f, -0.16f));

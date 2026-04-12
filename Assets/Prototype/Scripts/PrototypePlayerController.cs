@@ -32,9 +32,9 @@ public class PrototypePlayerController : MonoBehaviour
             controller = gameObject.AddComponent<CharacterController>();
         }
 
-        controller.height = 1.75f;
+        controller.height = 2.05f;
         controller.radius = 0.32f;
-        controller.center = new Vector3(0f, 0.88f, 0f);
+        controller.center = new Vector3(0f, 1.03f, 0f);
         controller.stepOffset = 0.25f;
         controller.slopeLimit = 50f;
 
