@@ -34,6 +34,11 @@ public class PrototypeSceneBuilder : MonoBehaviour
                 continue;
             }
 
+            if (transform.IsChildOf(existing.transform))
+            {
+                continue;
+            }
+
             if (existing.CompareTag("MainCamera"))
             {
                 continue;
@@ -73,8 +78,17 @@ public class PrototypeSceneBuilder : MonoBehaviour
 
         root = new GameObject("PrototypeSceneRoot");
 
-        transform.position = new Vector3(-6.2f, 1.95f, 3.5f);
-        transform.rotation = Quaternion.Euler(0f, 82f, 0f);
+        Transform playerRoot = transform.parent;
+        if (playerRoot != null)
+        {
+            playerRoot.position = new Vector3(-6.2f, 1.95f, 0f);
+            playerRoot.rotation = Quaternion.Euler(0f, 82f, 0f);
+        }
+        else
+        {
+            transform.position = new Vector3(-6.2f, 1.95f, 0f);
+            transform.rotation = Quaternion.Euler(0f, 82f, 0f);
+        }
 
         CreateDirectionalLight();
     }
