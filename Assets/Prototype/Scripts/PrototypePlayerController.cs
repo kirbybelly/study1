@@ -8,6 +8,7 @@ public class PrototypePlayerController : MonoBehaviour
     [SerializeField] private float sprintSpeed = 9f;
     [SerializeField] private float gravity = -18f;
     [SerializeField] private float lookSensitivity = 0.16f;
+    [SerializeField] private float fixedCameraZ = 3f;
 
     [Header("Interaction")]
     [SerializeField] private float interactionDistance = 4f;
@@ -18,25 +19,16 @@ public class PrototypePlayerController : MonoBehaviour
 
     private CharacterController controller;
     private Camera playerCamera;
+    private Transform playerRoot;
     private Rigidbody heldBody;
     private float verticalVelocity;
     private float pitch;
+    private float yaw;
 
     private void Awake()
     {
         playerCamera = GetComponent<Camera>();
-
-        controller = GetComponent<CharacterController>();
-        if (controller == null)
-        {
-            controller = gameObject.AddComponent<CharacterController>();
-        }
-
-        controller.height = 2.05f;
-        controller.radius = 0.32f;
-        controller.center = new Vector3(0f, 1.03f, 0f);
-        controller.stepOffset = 0.25f;
-        controller.slopeLimit = 50f;
+        SetupPlayerRoot();
 
         if (playerCamera != null)
         {
@@ -49,12 +41,39 @@ public class PrototypePlayerController : MonoBehaviour
         Cursor.visible = false;
     }
 
+    private void SetupPlayerRoot()
+    {
+        CharacterController existingController = GetComponent<CharacterController>();
+        if (existingController != null)
+        {
+            Destroy(existingController);
+        }
+
+        playerRoot = new GameObject("PlayerRoot").transform;
+        playerRoot.position = transform.position;
+        playerRoot.rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
+
+        transform.SetParent(playerRoot);
+        transform.localPosition = new Vector3(0f, 0f, fixedCameraZ);
+        transform.localRotation = Quaternion.identity;
+
+        controller = playerRoot.gameObject.AddComponent<CharacterController>();
+        controller.height = 2.05f;
+        controller.radius = 0.32f;
+        controller.center = new Vector3(0f, 1.03f, 0f);
+        controller.stepOffset = 0.25f;
+        controller.slopeLimit = 50f;
+
+        yaw = playerRoot.eulerAngles.y;
+    }
+
     private void Update()
     {
         UpdateLook();
         UpdateMovement();
         UpdateInteraction();
         UpdateHeldObject();
+        KeepCameraOffset();
 
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
@@ -87,9 +106,14 @@ public class PrototypePlayerController : MonoBehaviour
         float pitchDelta = mouseDelta.y * lookSensitivity;
 
         pitch = Mathf.Clamp(pitch - pitchDelta, -75f, 80f);
+        this.yaw += yaw;
 
-        transform.Rotate(0f, yaw, 0f);
-        transform.localEulerAngles = new Vector3(pitch, transform.localEulerAngles.y, 0f);
+        if (playerRoot != null)
+        {
+            playerRoot.rotation = Quaternion.Euler(0f, this.yaw, 0f);
+        }
+
+        transform.localRotation = Quaternion.Euler(pitch, 0f, 0f);
     }
 
     private void UpdateMovement()
@@ -122,7 +146,9 @@ public class PrototypePlayerController : MonoBehaviour
             vertical += 1f;
         }
 
-        Vector3 input = (transform.right * horizontal + transform.forward * vertical).normalized;
+        Vector3 forward = playerRoot != null ? playerRoot.forward : transform.forward;
+        Vector3 right = playerRoot != null ? playerRoot.right : transform.right;
+        Vector3 input = (right * horizontal + forward * vertical).normalized;
         float currentSpeed = keyboard.leftShiftKey.isPressed ? sprintSpeed : moveSpeed;
         Vector3 move = input * currentSpeed;
 
@@ -135,6 +161,16 @@ public class PrototypePlayerController : MonoBehaviour
         move.y = verticalVelocity;
 
         controller.Move(move * Time.deltaTime);
+    }
+
+    private void KeepCameraOffset()
+    {
+        if (playerRoot == null)
+        {
+            return;
+        }
+
+        transform.localPosition = new Vector3(0f, 0f, fixedCameraZ);
     }
 
     private void UpdateInteraction()
