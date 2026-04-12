@@ -8,7 +8,7 @@ public class PrototypePlayerController : MonoBehaviour
     [SerializeField] private float sprintSpeed = 9f;
     [SerializeField] private float gravity = -18f;
     [SerializeField] private float lookSensitivity = 0.16f;
-    [SerializeField] private float fixedCameraZ = 3f;
+    [SerializeField] private float fixedCameraHeight = 1.7f;
 
     [Header("Interaction")]
     [SerializeField] private float interactionDistance = 4f;
@@ -54,7 +54,7 @@ public class PrototypePlayerController : MonoBehaviour
         playerRoot.rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
 
         transform.SetParent(playerRoot);
-        transform.localPosition = new Vector3(0f, 0f, fixedCameraZ);
+        transform.localPosition = new Vector3(0f, fixedCameraHeight, 0f);
         transform.localRotation = Quaternion.identity;
 
         controller = playerRoot.gameObject.AddComponent<CharacterController>();
@@ -170,7 +170,7 @@ public class PrototypePlayerController : MonoBehaviour
             return;
         }
 
-        transform.localPosition = new Vector3(0f, 0f, fixedCameraZ);
+        transform.localPosition = new Vector3(0f, fixedCameraHeight, 0f);
     }
 
     private void UpdateInteraction()

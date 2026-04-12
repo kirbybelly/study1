@@ -81,12 +81,12 @@ public class PrototypeSceneBuilder : MonoBehaviour
         Transform playerRoot = transform.parent;
         if (playerRoot != null)
         {
-            playerRoot.position = new Vector3(-6.2f, 1.95f, 0f);
+            playerRoot.position = new Vector3(-6.2f, 0.05f, 0f);
             playerRoot.rotation = Quaternion.Euler(0f, 82f, 0f);
         }
         else
         {
-            transform.position = new Vector3(-6.2f, 1.95f, 0f);
+            transform.position = new Vector3(-6.2f, 0.05f, 0f);
             transform.rotation = Quaternion.Euler(0f, 82f, 0f);
         }
 
