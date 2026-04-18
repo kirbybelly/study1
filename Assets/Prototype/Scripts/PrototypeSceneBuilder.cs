@@ -114,9 +114,6 @@ public class PrototypeSceneBuilder : MonoBehaviour
         RemoveWall(cafeteria, "WallRight");
 
         CreatePrimitive("ServingCounter", PrimitiveType.Cube, accentMaterial, new Vector3(-5.8f, 1.1f, 4.2f), new Vector3(4.8f, 2.2f, 1.1f), cafeteria);
-        CreatePrimitive("TrayRail", PrimitiveType.Cube, metalMaterial, new Vector3(-5.8f, 1.95f, 3.5f), new Vector3(4.4f, 0.15f, 0.2f), cafeteria);
-        CreatePrimitive("FoodPanel", PrimitiveType.Cube, metalMaterial, new Vector3(-5.8f, 1.9f, 4.75f), new Vector3(4.5f, 0.8f, 0.3f), cafeteria);
-
         for (int row = 0; row < 2; row++)
         {
             for (int col = 0; col < 3; col++)
@@ -132,8 +129,6 @@ public class PrototypeSceneBuilder : MonoBehaviour
             CreateCeilingLight(cafeteria, new Vector3(offset, 3.75f, 0f), new Vector3(1.5f, 0.12f, 0.5f));
         }
 
-        CreateDoorFrame(cafeteria, new Vector3(8.95f, 1.6f, 0f), new Vector3(0.3f, 3.2f, 3.2f), saunaMaterial);
-        CreateSign(cafeteria, "CAFETERIA", new Vector3(-6f, 3.25f, -5.45f), Color.black);
     }
 
     private void BuildSaunaCorridor()
@@ -146,10 +141,6 @@ public class PrototypeSceneBuilder : MonoBehaviour
         RemoveWall(turnCorridor, "WallFront");
         RemoveWall(turnCorridor, "WallBack");
 
-        CreateDoorFrame(corridor, new Vector3(-8f, 1.6f, 0f), new Vector3(0.2f, 3.2f, 3.2f), cafeteriaMaterial);
-        CreateDoorFrame(corridor, new Vector3(8f, 1.6f, 0f), new Vector3(0.2f, 3.2f, 3.2f), saunaMaterial);
-        CreateDoorFrame(turnCorridor, new Vector3(0f, 1.6f, 6f), new Vector3(3.2f, 3.2f, 0.2f), saunaMaterial);
-
         CreatePrimitive("BenchLeft", PrimitiveType.Cube, cafeteriaMaterial, new Vector3(-1.5f, 0.45f, -2.2f), new Vector3(3f, 0.9f, 0.7f), corridor);
         CreatePrimitive("BenchRight", PrimitiveType.Cube, cafeteriaMaterial, new Vector3(2.4f, 0.45f, 2.1f), new Vector3(3.2f, 0.9f, 0.7f), corridor);
         CreatePrimitive("TowelShelf", PrimitiveType.Cube, metalMaterial, new Vector3(1.6f, 2f, -2.9f), new Vector3(2.4f, 0.2f, 0.5f), corridor);
@@ -160,13 +151,6 @@ public class PrototypeSceneBuilder : MonoBehaviour
             CreatePrimitive("Locker_" + i, PrimitiveType.Cube, metalMaterial, new Vector3(4.2f, 1.2f, -2.5f + i * 1.8f), new Vector3(1.1f, 2.4f, 0.65f), corridor);
         }
 
-        CreatePrimitive("TurnBench", PrimitiveType.Cube, cafeteriaMaterial, new Vector3(-1.8f, 0.45f, 3.6f), new Vector3(2.4f, 0.9f, 0.7f), turnCorridor);
-        CreatePrimitive("TurnShelf", PrimitiveType.Cube, metalMaterial, new Vector3(1.4f, 1.8f, -4.6f), new Vector3(2f, 0.2f, 0.5f), turnCorridor);
-        CreateSteamPanel(corridor, new Vector3(-0.2f, 1.25f, -3.3f), new Vector3(3f, 2.2f, 0.2f));
-        CreateSteamPanel(turnCorridor, new Vector3(3.2f, 1.25f, 0.2f), new Vector3(0.2f, 2.2f, 3f));
-        CreateSign(corridor, "SAUNA", new Vector3(-6f, 3.1f, -3f), Color.white);
-        CreateSign(corridor, "RESTROOM ->", new Vector3(3.9f, 3.1f, -3f), Color.white);
-        CreateSign(turnCorridor, "TURN LEFT", new Vector3(0f, 3.1f, 4.9f), Color.white);
     }
 
     private void BuildRestroom()
@@ -174,7 +158,6 @@ public class PrototypeSceneBuilder : MonoBehaviour
         Transform restroom = CreateRoomShell("MensRestroom", new Vector3(23f, 0f, -15f), 12f, 4f, 8f, restroomMaterial, new Color(0.77f, 0.8f, 0.82f));
         RemoveWall(restroom, "WallFront");
 
-        CreateDoorFrame(restroom, new Vector3(0f, 1.6f, 4f), new Vector3(2.8f, 3.2f, 0.2f), saunaMaterial);
         CreatePrimitive("MirrorStrip", PrimitiveType.Cube, glassMaterial, new Vector3(-1.2f, 2f, -3.7f), new Vector3(4.4f, 1.3f, 0.08f), restroom);
         CreatePrimitive("SinkCounter", PrimitiveType.Cube, metalMaterial, new Vector3(-1.2f, 0.92f, -3.3f), new Vector3(4.6f, 0.95f, 1f), restroom);
 
@@ -200,7 +183,6 @@ public class PrototypeSceneBuilder : MonoBehaviour
 
         CreatePrimitive("TrashCan", PrimitiveType.Cylinder, accentMaterial, new Vector3(-4.5f, 0.48f, 2.9f), new Vector3(0.45f, 0.46f, 0.45f), restroom);
         CreatePrimitive("HandDryer", PrimitiveType.Cube, metalMaterial, new Vector3(-4.8f, 1.55f, -2.9f), new Vector3(0.55f, 0.55f, 0.24f), restroom);
-        CreateSign(restroom, "MEN", new Vector3(-4.9f, 3.05f, -3.35f), Color.black);
     }
 
     private void BuildNPCs()
@@ -291,7 +273,6 @@ public class PrototypeSceneBuilder : MonoBehaviour
         CreatePrimitive("Body", PrimitiveType.Capsule, robe, new Vector3(0f, 1.25f, 0f), new Vector3(0.56f, 0.7f, 0.38f), worker);
         CreatePrimitive("Head", PrimitiveType.Sphere, CreateMaterial(new Color(0.94f, 0.79f, 0.63f)), new Vector3(0f, 2.02f, 0f), new Vector3(0.44f, 0.44f, 0.44f), worker);
         CreatePrimitive("Cap", PrimitiveType.Cylinder, accentMaterial, new Vector3(0f, 2.28f, 0f), new Vector3(0.32f, 0.08f, 0.32f), worker);
-        CreateSign(worker, "Restroom is through the last door.", new Vector3(-0.6f, 2.8f, 0f), Color.black, 24);
     }
 
     private void BuildToiletStall(Transform restroom, Vector3 localOrigin)
