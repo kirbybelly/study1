@@ -1,7 +1,12 @@
+using System.IO;
 using UnityEngine;
 
 public class PrototypeSceneBuilder : MonoBehaviour
 {
+    private const string CafeteriaWallDiffusePath = "Assets/Art/Environment/Textures/Walls/textures/beige_wall_001_diff_4k.jpg";
+    private const string CafeteriaWallHeightPath = "Assets/Art/Environment/Textures/Walls/textures/beige_wall_001_disp_4k.png";
+    private const string CafeteriaWallRoughnessPath = "Assets/Art/Environment/Textures/Walls/textures/beige_wall_001_rough_4k.jpg";
+
     private Material wallMaterial;
     private Material floorMaterial;
     private Material cafeteriaMaterial;
@@ -66,6 +71,8 @@ public class PrototypeSceneBuilder : MonoBehaviour
         metalMaterial = CreateMaterial(new Color(0.7f, 0.73f, 0.76f));
         glassMaterial = CreateMaterial(new Color(0.62f, 0.86f, 0.94f), 0.45f);
         accentMaterial = CreateMaterial(new Color(0.79f, 0.28f, 0.23f));
+
+        ApplyTextureSet(cafeteriaMaterial, CafeteriaWallDiffusePath, CafeteriaWallHeightPath, CafeteriaWallRoughnessPath, new Vector2(3f, 1.2f));
 
         bouncyMaterial = new PhysicsMaterial("PrototypeBouncy")
         {
@@ -493,5 +500,79 @@ public class PrototypeSceneBuilder : MonoBehaviour
         }
 
         return material;
+    }
+
+    private void ApplyTextureSet(Material material, string diffusePath, string heightPath, string roughnessPath, Vector2 tiling)
+    {
+        Texture2D diffuse = LoadTextureFromProjectPath(diffusePath, false);
+        if (diffuse != null)
+        {
+            material.color = Color.white;
+            material.mainTexture = diffuse;
+            material.SetTexture("_BaseMap", diffuse);
+            material.mainTextureScale = tiling;
+            material.SetTextureScale("_BaseMap", tiling);
+        }
+
+        Texture2D height = LoadTextureFromProjectPath(heightPath, true);
+        if (height != null)
+        {
+            material.SetTexture("_ParallaxMap", height);
+            material.SetTextureScale("_ParallaxMap", tiling);
+            material.SetFloat("_Parallax", 0.02f);
+            material.EnableKeyword("_PARALLAXMAP");
+        }
+
+        Texture2D roughness = LoadTextureFromProjectPath(roughnessPath, true);
+        if (roughness != null)
+        {
+            Texture2D metallicSmoothness = BuildSmoothnessTexture(roughness);
+            material.SetTexture("_MetallicGlossMap", metallicSmoothness);
+            material.SetTextureScale("_MetallicGlossMap", tiling);
+            material.SetFloat("_Metallic", 0f);
+            material.SetFloat("_Smoothness", 1f);
+            material.EnableKeyword("_METALLICSPECGLOSSMAP");
+        }
+    }
+
+    private Texture2D LoadTextureFromProjectPath(string assetPath, bool linear)
+    {
+        string relativePath = assetPath.Replace("Assets/", string.Empty).Replace('/', Path.DirectorySeparatorChar);
+        string fullPath = Path.Combine(Application.dataPath, relativePath);
+        if (!File.Exists(fullPath))
+        {
+            return null;
+        }
+
+        byte[] bytes = File.ReadAllBytes(fullPath);
+        Texture2D texture = new Texture2D(2, 2, TextureFormat.RGBA32, false, linear);
+        if (!texture.LoadImage(bytes, false))
+        {
+            Destroy(texture);
+            return null;
+        }
+
+        texture.wrapMode = TextureWrapMode.Repeat;
+        texture.filterMode = FilterMode.Bilinear;
+        return texture;
+    }
+
+    private Texture2D BuildSmoothnessTexture(Texture2D roughnessTexture)
+    {
+        Texture2D smoothnessTexture = new Texture2D(roughnessTexture.width, roughnessTexture.height, TextureFormat.RGBA32, false, true);
+        Color[] sourcePixels = roughnessTexture.GetPixels();
+        Color[] convertedPixels = new Color[sourcePixels.Length];
+
+        for (int i = 0; i < sourcePixels.Length; i++)
+        {
+            float smoothness = 1f - sourcePixels[i].grayscale;
+            convertedPixels[i] = new Color(0f, 0f, 0f, smoothness);
+        }
+
+        smoothnessTexture.SetPixels(convertedPixels);
+        smoothnessTexture.Apply();
+        smoothnessTexture.wrapMode = TextureWrapMode.Repeat;
+        smoothnessTexture.filterMode = FilterMode.Bilinear;
+        return smoothnessTexture;
     }
 }
