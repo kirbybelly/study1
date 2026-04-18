@@ -111,9 +111,13 @@ public class PrototypeSceneBuilder : MonoBehaviour
     private void BuildCafeteria()
     {
         Transform cafeteria = CreateRoomShell("Cafeteria", new Vector3(0f, 0f, 0f), 18f, 4.2f, 12f, cafeteriaMaterial, new Color(0.82f, 0.8f, 0.74f));
-        RemoveWall(cafeteria, "WallRight");
+        CreateOpeningOnXWall(cafeteria, "WallRight", 9f, 4.2f, 12f, 0f, 3.2f, cafeteriaMaterial);
 
         CreatePrimitive("ServingCounter", PrimitiveType.Cube, accentMaterial, new Vector3(-5.8f, 1.1f, 4.2f), new Vector3(4.8f, 2.2f, 1.1f), cafeteria);
+        CreatePrimitive("CounterShelf", PrimitiveType.Cube, metalMaterial, new Vector3(-5.8f, 2.15f, 4.75f), new Vector3(4.8f, 0.16f, 0.4f), cafeteria);
+        CreatePrimitive("MenuBoard", PrimitiveType.Cube, metalMaterial, new Vector3(-5.8f, 3f, 4.95f), new Vector3(4.6f, 0.7f, 0.08f), cafeteria);
+        CreatePrimitive("WallTrimBack", PrimitiveType.Cube, metalMaterial, new Vector3(0f, 1f, -5.82f), new Vector3(17.6f, 0.06f, 0.08f), cafeteria);
+        CreatePrimitive("WallTrimFront", PrimitiveType.Cube, metalMaterial, new Vector3(-1.2f, 1f, 5.82f), new Vector3(14.8f, 0.06f, 0.08f), cafeteria);
         for (int row = 0; row < 2; row++)
         {
             for (int col = 0; col < 3; col++)
@@ -134,55 +138,80 @@ public class PrototypeSceneBuilder : MonoBehaviour
     private void BuildSaunaCorridor()
     {
         Transform corridor = CreateRoomShell("SaunaCorridor", new Vector3(17f, 0f, 0f), 16f, 4f, 7f, saunaMaterial, new Color(0.49f, 0.31f, 0.2f));
-        Transform turnCorridor = CreateRoomShell("SaunaTurnCorridor", new Vector3(23f, 0f, -7.5f), 7f, 4f, 12f, saunaMaterial, new Color(0.46f, 0.29f, 0.19f));
+        Transform turnCorridor = CreateRoomShell("SaunaTurnCorridor", new Vector3(23f, 0f, -9.5f), 7f, 4f, 12f, saunaMaterial, new Color(0.46f, 0.29f, 0.19f));
 
-        RemoveWall(corridor, "WallLeft");
-        RemoveWall(corridor, "WallRight");
-        RemoveWall(turnCorridor, "WallFront");
-        RemoveWall(turnCorridor, "WallBack");
+        CreateOpeningOnXWall(corridor, "WallLeft", -8f, 4f, 7f, 0f, 3.2f, saunaMaterial);
+        CreateOpeningOnZWall(corridor, "WallBack", -3.5f, 4f, 16f, 5.8f, 3.2f, saunaMaterial);
+        CreateOpeningOnZWall(turnCorridor, "WallFront", 6f, 4f, 7f, 0f, 3.2f, saunaMaterial);
+        CreateOpeningOnZWall(turnCorridor, "WallBack", -6f, 4f, 7f, 0f, 2.8f, saunaMaterial);
 
         CreatePrimitive("BenchLeft", PrimitiveType.Cube, cafeteriaMaterial, new Vector3(-1.5f, 0.45f, -2.2f), new Vector3(3f, 0.9f, 0.7f), corridor);
         CreatePrimitive("BenchRight", PrimitiveType.Cube, cafeteriaMaterial, new Vector3(2.4f, 0.45f, 2.1f), new Vector3(3.2f, 0.9f, 0.7f), corridor);
         CreatePrimitive("TowelShelf", PrimitiveType.Cube, metalMaterial, new Vector3(1.6f, 2f, -2.9f), new Vector3(2.4f, 0.2f, 0.5f), corridor);
         CreatePrimitive("FrontDesk", PrimitiveType.Cube, accentMaterial, new Vector3(-4.7f, 1f, 2.5f), new Vector3(2f, 2f, 1f), corridor);
+        CreatePrimitive("DeskTop", PrimitiveType.Cube, metalMaterial, new Vector3(-4.7f, 2.05f, 2.5f), new Vector3(2f, 0.12f, 1f), corridor);
+        CreatePrimitive("FloorRunner", PrimitiveType.Cube, accentMaterial, new Vector3(2.8f, 0.03f, -0.4f), new Vector3(4f, 0.02f, 1.4f), corridor);
+
+        for (int i = 0; i < 4; i++)
+        {
+            CreatePrimitive("Locker_" + i, PrimitiveType.Cube, metalMaterial, new Vector3(4.2f, 1.2f, -2.7f + i * 1.6f), new Vector3(1.1f, 2.4f, 0.65f), corridor);
+        }
+
+        CreatePrimitive("TurnCornerBench", PrimitiveType.Cube, cafeteriaMaterial, new Vector3(-1.4f, 0.45f, 4.4f), new Vector3(2f, 0.9f, 0.7f), turnCorridor);
+        CreatePrimitive("TurnShelfA", PrimitiveType.Cube, metalMaterial, new Vector3(1.5f, 1.75f, 3.6f), new Vector3(1.6f, 0.18f, 0.4f), turnCorridor);
+        CreatePrimitive("TurnShelfB", PrimitiveType.Cube, metalMaterial, new Vector3(1.5f, 1.75f, 1.2f), new Vector3(1.6f, 0.18f, 0.4f), turnCorridor);
+        CreatePrimitive("TurnRunner", PrimitiveType.Cube, accentMaterial, new Vector3(0f, 0.03f, 0f), new Vector3(1.4f, 0.02f, 9.5f), turnCorridor);
 
         for (int i = 0; i < 3; i++)
         {
-            CreatePrimitive("Locker_" + i, PrimitiveType.Cube, metalMaterial, new Vector3(4.2f, 1.2f, -2.5f + i * 1.8f), new Vector3(1.1f, 2.4f, 0.65f), corridor);
+            CreateCeilingLight(corridor, new Vector3(-5.4f + i * 5.2f, 3.55f, 0f), new Vector3(1.4f, 0.12f, 0.45f));
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            CreateCeilingLight(turnCorridor, new Vector3(0f, 3.55f, 4.2f - i * 4.2f), new Vector3(0.45f, 0.12f, 1.4f));
         }
 
     }
 
     private void BuildRestroom()
     {
-        Transform restroom = CreateRoomShell("MensRestroom", new Vector3(23f, 0f, -15f), 12f, 4f, 8f, restroomMaterial, new Color(0.77f, 0.8f, 0.82f));
-        RemoveWall(restroom, "WallFront");
+        Transform restroom = CreateRoomShell("MensRestroom", new Vector3(23f, 0f, -19.5f), 12f, 4f, 10f, restroomMaterial, new Color(0.77f, 0.8f, 0.82f));
+        CreateOpeningOnZWall(restroom, "WallFront", 5f, 4f, 12f, 0f, 2.8f, restroomMaterial);
 
-        CreatePrimitive("MirrorStrip", PrimitiveType.Cube, glassMaterial, new Vector3(-1.2f, 2f, -3.7f), new Vector3(4.4f, 1.3f, 0.08f), restroom);
-        CreatePrimitive("SinkCounter", PrimitiveType.Cube, metalMaterial, new Vector3(-1.2f, 0.92f, -3.3f), new Vector3(4.6f, 0.95f, 1f), restroom);
+        CreatePrimitive("MirrorStrip", PrimitiveType.Cube, glassMaterial, new Vector3(-1.8f, 2f, -4.7f), new Vector3(5.4f, 1.3f, 0.08f), restroom);
+        CreatePrimitive("SinkCounter", PrimitiveType.Cube, metalMaterial, new Vector3(-1.8f, 0.92f, -4.25f), new Vector3(5.6f, 0.95f, 1.2f), restroom);
+        CreatePrimitive("TileBand", PrimitiveType.Cube, metalMaterial, new Vector3(0f, 1.55f, -4.84f), new Vector3(11.6f, 0.06f, 0.06f), restroom);
+        CreatePrimitive("EntryMat", PrimitiveType.Cube, accentMaterial, new Vector3(0f, 0.03f, 3.6f), new Vector3(1.6f, 0.02f, 2.2f), restroom);
 
         for (int i = 0; i < 3; i++)
         {
-            float x = -3f + i * 1.8f;
-            CreatePrimitive("Sink_" + i, PrimitiveType.Cylinder, wallMaterial, new Vector3(x, 1.2f, -3.25f), new Vector3(0.42f, 0.08f, 0.42f), restroom);
-            CreatePrimitive("Faucet_" + i, PrimitiveType.Cube, metalMaterial, new Vector3(x, 1.45f, -3.55f), new Vector3(0.16f, 0.24f, 0.16f), restroom);
+            float x = -4.1f + i * 2.2f;
+            CreatePrimitive("Sink_" + i, PrimitiveType.Cylinder, wallMaterial, new Vector3(x, 1.2f, -4.18f), new Vector3(0.42f, 0.08f, 0.42f), restroom);
+            CreatePrimitive("Faucet_" + i, PrimitiveType.Cube, metalMaterial, new Vector3(x, 1.45f, -4.58f), new Vector3(0.16f, 0.24f, 0.16f), restroom);
         }
 
         for (int i = 0; i < 3; i++)
         {
-            float z = -2f + i * 2f;
-            CreatePrimitive("Urinal_" + i, PrimitiveType.Cube, wallMaterial, new Vector3(3.85f, 1.25f, z), new Vector3(0.7f, 1.35f, 0.48f), restroom);
-            CreatePrimitive("Divider_" + i, PrimitiveType.Cube, metalMaterial, new Vector3(3.2f, 1.35f, z + 0.75f), new Vector3(0.08f, 1.5f, 1.1f), restroom);
+            float z = -2.6f + i * 2.6f;
+            CreatePrimitive("Urinal_" + i, PrimitiveType.Cube, wallMaterial, new Vector3(4.35f, 1.25f, z), new Vector3(0.7f, 1.35f, 0.48f), restroom);
+            CreatePrimitive("DividerTop_" + i, PrimitiveType.Cube, metalMaterial, new Vector3(3.72f, 1.35f, z + 0.95f), new Vector3(0.08f, 1.5f, 1.3f), restroom);
         }
 
         for (int i = 0; i < 2; i++)
         {
-            float z = -1.8f + i * 3.2f;
-            BuildToiletStall(restroom, new Vector3(0.85f, 0f, z));
+            float z = -1.7f + i * 3.8f;
+            BuildToiletStall(restroom, new Vector3(-0.35f, 0f, z));
         }
 
-        CreatePrimitive("TrashCan", PrimitiveType.Cylinder, accentMaterial, new Vector3(-4.5f, 0.48f, 2.9f), new Vector3(0.45f, 0.46f, 0.45f), restroom);
-        CreatePrimitive("HandDryer", PrimitiveType.Cube, metalMaterial, new Vector3(-4.8f, 1.55f, -2.9f), new Vector3(0.55f, 0.55f, 0.24f), restroom);
+        CreatePrimitive("TrashCan", PrimitiveType.Cylinder, accentMaterial, new Vector3(-5.1f, 0.48f, 3.4f), new Vector3(0.45f, 0.46f, 0.45f), restroom);
+        CreatePrimitive("HandDryer", PrimitiveType.Cube, metalMaterial, new Vector3(-5.3f, 1.55f, -1.6f), new Vector3(0.55f, 0.55f, 0.24f), restroom);
+        CreatePrimitive("SoapDispenser", PrimitiveType.Cube, accentMaterial, new Vector3(1f, 1.55f, -4.72f), new Vector3(0.22f, 0.38f, 0.12f), restroom);
+
+        for (int i = 0; i < 3; i++)
+        {
+            CreateCeilingLight(restroom, new Vector3(-3.6f + i * 3.6f, 3.55f, 0.4f), new Vector3(1.2f, 0.12f, 0.45f));
+        }
     }
 
     private void BuildNPCs()
@@ -277,11 +306,12 @@ public class PrototypeSceneBuilder : MonoBehaviour
 
     private void BuildToiletStall(Transform restroom, Vector3 localOrigin)
     {
-        CreatePrimitive("StallSideA", PrimitiveType.Cube, metalMaterial, localOrigin + new Vector3(0f, 1.4f, -0.75f), new Vector3(0.08f, 2.8f, 1.5f), restroom);
-        CreatePrimitive("StallSideB", PrimitiveType.Cube, metalMaterial, localOrigin + new Vector3(1.45f, 1.4f, -0.75f), new Vector3(0.08f, 2.8f, 1.5f), restroom);
-        CreatePrimitive("StallDoor", PrimitiveType.Cube, metalMaterial, localOrigin + new Vector3(0.72f, 1.4f, -1.45f), new Vector3(1.36f, 2.8f, 0.08f), restroom);
-        CreatePrimitive("ToiletBowl", PrimitiveType.Cylinder, wallMaterial, localOrigin + new Vector3(0.72f, 0.58f, -0.2f), new Vector3(0.36f, 0.22f, 0.36f), restroom);
-        CreatePrimitive("ToiletBack", PrimitiveType.Cube, wallMaterial, localOrigin + new Vector3(0.72f, 0.95f, 0.18f), new Vector3(0.55f, 0.66f, 0.24f), restroom);
+        CreatePrimitive("StallSideA", PrimitiveType.Cube, metalMaterial, localOrigin + new Vector3(0f, 1.4f, -0.9f), new Vector3(0.08f, 2.8f, 1.8f), restroom);
+        CreatePrimitive("StallSideB", PrimitiveType.Cube, metalMaterial, localOrigin + new Vector3(1.75f, 1.4f, -0.9f), new Vector3(0.08f, 2.8f, 1.8f), restroom);
+        CreatePrimitive("StallDoor", PrimitiveType.Cube, metalMaterial, localOrigin + new Vector3(0.88f, 1.4f, -1.75f), new Vector3(1.68f, 2.8f, 0.08f), restroom);
+        CreatePrimitive("ToiletBowl", PrimitiveType.Cylinder, wallMaterial, localOrigin + new Vector3(0.9f, 0.58f, -0.45f), new Vector3(0.36f, 0.22f, 0.36f), restroom);
+        CreatePrimitive("ToiletBack", PrimitiveType.Cube, wallMaterial, localOrigin + new Vector3(0.9f, 0.95f, -0.02f), new Vector3(0.55f, 0.66f, 0.24f), restroom);
+        CreatePrimitive("FlushBox", PrimitiveType.Cube, metalMaterial, localOrigin + new Vector3(0.9f, 1.55f, 0.05f), new Vector3(0.24f, 0.24f, 0.12f), restroom);
     }
 
     private Transform CreateRoomShell(string name, Vector3 center, float width, float height, float depth, Material wallMat, Color ceilingColor)
@@ -372,6 +402,48 @@ public class PrototypeSceneBuilder : MonoBehaviour
         if (wall != null)
         {
             Destroy(wall.gameObject);
+        }
+    }
+
+    private void CreateOpeningOnXWall(Transform parent, string wallName, float wallX, float roomHeight, float roomDepth, float openingCenterZ, float openingWidth, Material wallMat)
+    {
+        RemoveWall(parent, wallName);
+
+        float halfDepth = roomDepth * 0.5f;
+        float lowerLength = Mathf.Max(0f, (openingCenterZ - (openingWidth * 0.5f)) + halfDepth);
+        float upperLength = Mathf.Max(0f, halfDepth - (openingCenterZ + (openingWidth * 0.5f)));
+
+        if (lowerLength > 0.01f)
+        {
+            float centerZ = -halfDepth + (lowerLength * 0.5f);
+            CreatePrimitive(wallName + "_Lower", PrimitiveType.Cube, wallMat, new Vector3(wallX, roomHeight * 0.5f, centerZ), new Vector3(0.25f, roomHeight, lowerLength), parent);
+        }
+
+        if (upperLength > 0.01f)
+        {
+            float centerZ = openingCenterZ + (openingWidth * 0.5f) + (upperLength * 0.5f);
+            CreatePrimitive(wallName + "_Upper", PrimitiveType.Cube, wallMat, new Vector3(wallX, roomHeight * 0.5f, centerZ), new Vector3(0.25f, roomHeight, upperLength), parent);
+        }
+    }
+
+    private void CreateOpeningOnZWall(Transform parent, string wallName, float wallZ, float roomHeight, float roomWidth, float openingCenterX, float openingWidth, Material wallMat)
+    {
+        RemoveWall(parent, wallName);
+
+        float halfWidth = roomWidth * 0.5f;
+        float leftLength = Mathf.Max(0f, (openingCenterX - (openingWidth * 0.5f)) + halfWidth);
+        float rightLength = Mathf.Max(0f, halfWidth - (openingCenterX + (openingWidth * 0.5f)));
+
+        if (leftLength > 0.01f)
+        {
+            float centerX = -halfWidth + (leftLength * 0.5f);
+            CreatePrimitive(wallName + "_Left", PrimitiveType.Cube, wallMat, new Vector3(centerX, roomHeight * 0.5f, wallZ), new Vector3(leftLength, roomHeight, 0.25f), parent);
+        }
+
+        if (rightLength > 0.01f)
+        {
+            float centerX = openingCenterX + (openingWidth * 0.5f) + (rightLength * 0.5f);
+            CreatePrimitive(wallName + "_Right", PrimitiveType.Cube, wallMat, new Vector3(centerX, roomHeight * 0.5f, wallZ), new Vector3(rightLength, roomHeight, 0.25f), parent);
         }
     }
 
