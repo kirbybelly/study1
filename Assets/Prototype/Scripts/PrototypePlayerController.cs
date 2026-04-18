@@ -6,6 +6,7 @@ public class PrototypePlayerController : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 6f;
     [SerializeField] private float sprintSpeed = 9f;
+    [SerializeField] private float jumpForce = 7f;
     [SerializeField] private float gravity = -18f;
     [SerializeField] private float lookSensitivity = 0.16f;
     [SerializeField] private float fixedCameraHeight = 1.7f;
@@ -157,6 +158,11 @@ public class PrototypePlayerController : MonoBehaviour
             verticalVelocity = -2f;
         }
 
+        if (controller.isGrounded && keyboard.spaceKey.wasPressedThisFrame)
+        {
+            verticalVelocity = jumpForce;
+        }
+
         verticalVelocity += gravity * Time.deltaTime;
         move.y = verticalVelocity;
 
@@ -282,7 +288,7 @@ public class PrototypePlayerController : MonoBehaviour
         GUI.color = Color.black;
         GUI.Box(new Rect(16f, 16f, 520f, 88f), string.Empty);
         GUI.color = Color.white;
-        GUI.Label(new Rect(28f, 26f, 500f, 24f), "WASD move  Shift sprint  Mouse look");
+        GUI.Label(new Rect(28f, 26f, 500f, 24f), "WASD move  Shift sprint  Space jump  Mouse look");
         GUI.Label(new Rect(28f, 46f, 500f, 24f), "Left click push  E grab/release  Right click throw");
         GUI.Label(new Rect(28f, 66f, 500f, 24f), "Goal: leave the cafeteria, pass the sauna corridor, and find the men's restroom.");
     }

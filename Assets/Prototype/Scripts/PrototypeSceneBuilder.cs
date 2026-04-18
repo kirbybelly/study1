@@ -111,7 +111,7 @@ public class PrototypeSceneBuilder : MonoBehaviour
     private void BuildCafeteria()
     {
         Transform cafeteria = CreateRoomShell("Cafeteria", new Vector3(0f, 0f, 0f), 18f, 4.2f, 12f, cafeteriaMaterial, new Color(0.82f, 0.8f, 0.74f));
-        CreateOpeningOnXWall(cafeteria, "WallRight", 9f, 4.2f, 12f, 0f, 3.2f, cafeteriaMaterial);
+        CreateOpeningOnXWall(cafeteria, "WallRight", 8.88f, 4.2f, 12f, 0f, 2.8f, cafeteriaMaterial);
 
         CreatePrimitive("ServingCounter", PrimitiveType.Cube, accentMaterial, new Vector3(-5.8f, 1.1f, 4.2f), new Vector3(4.8f, 2.2f, 1.1f), cafeteria);
         CreatePrimitive("CounterShelf", PrimitiveType.Cube, metalMaterial, new Vector3(-5.8f, 2.15f, 4.75f), new Vector3(4.8f, 0.16f, 0.4f), cafeteria);
@@ -140,7 +140,7 @@ public class PrototypeSceneBuilder : MonoBehaviour
         Transform corridor = CreateRoomShell("SaunaCorridor", new Vector3(17f, 0f, 0f), 16f, 4f, 7f, saunaMaterial, new Color(0.49f, 0.31f, 0.2f));
         Transform turnCorridor = CreateRoomShell("SaunaTurnCorridor", new Vector3(23f, 0f, -9.5f), 7f, 4f, 12f, saunaMaterial, new Color(0.46f, 0.29f, 0.19f));
 
-        CreateOpeningOnXWall(corridor, "WallLeft", -8f, 4f, 7f, 0f, 3.2f, saunaMaterial);
+        CreateOpeningOnXWall(corridor, "WallLeft", -7.88f, 4f, 7f, 0f, 2.6f, saunaMaterial);
         CreateOpeningOnZWall(corridor, "WallBack", -3.5f, 4f, 16f, 5.8f, 3.2f, saunaMaterial);
         CreateOpeningOnZWall(turnCorridor, "WallFront", 6f, 4f, 7f, 0f, 3.2f, saunaMaterial);
         CreateOpeningOnZWall(turnCorridor, "WallBack", -6f, 4f, 7f, 0f, 2.8f, saunaMaterial);
