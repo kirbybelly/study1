@@ -1,12 +1,15 @@
 using System.IO;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class PrototypeSceneBuilder : MonoBehaviour
 {
     private const string CafeteriaWallDiffusePath = "Assets/Art/Environment/Textures/Walls/textures/beige_wall_001_diff_4k.jpg";
     private const string CafeteriaWallHeightPath = "Assets/Art/Environment/Textures/Walls/textures/beige_wall_001_disp_4k.png";
     private const string CafeteriaWallRoughnessPath = "Assets/Art/Environment/Textures/Walls/textures/beige_wall_001_rough_4k.jpg";
-
+    private const string NpcPreviewModelPath = "Assets/Art/Characters/Models/NPCs/npc_stylized_preview_v2.obj";
     private Material wallMaterial;
     private Material floorMaterial;
     private Material cafeteriaMaterial;
@@ -223,7 +226,11 @@ public class PrototypeSceneBuilder : MonoBehaviour
 
     private void BuildNPCs()
     {
-        BuildFriend(new Vector3(-2f, 0f, -2.8f), new Color(0.17f, 0.42f, 0.75f));
+        if (!BuildPreviewFriend(new Vector3(-2f, 0f, -2.8f), new Color(0.17f, 0.42f, 0.75f)))
+        {
+            BuildFriend(new Vector3(-2f, 0f, -2.8f), new Color(0.17f, 0.42f, 0.75f));
+        }
+
         BuildFriend(new Vector3(0.3f, 0f, -3.2f), new Color(0.76f, 0.35f, 0.22f));
         BuildFriend(new Vector3(2.4f, 0f, -2.5f), new Color(0.22f, 0.58f, 0.34f));
         BuildSaunaWorker(new Vector3(12.8f, 0f, 1.7f));
@@ -294,6 +301,31 @@ public class PrototypeSceneBuilder : MonoBehaviour
         CreatePrimitive("Body", PrimitiveType.Capsule, shirtMaterial, new Vector3(0f, 1.28f, 0f), new Vector3(0.5f, 0.62f, 0.34f), friend);
         CreatePrimitive("Head", PrimitiveType.Sphere, CreateMaterial(new Color(0.94f, 0.79f, 0.63f)), new Vector3(0f, 2.02f, 0f), new Vector3(0.42f, 0.42f, 0.42f), friend);
         CreatePrimitive("Hair", PrimitiveType.Cube, CreateMaterial(new Color(0.13f, 0.1f, 0.08f)), new Vector3(0f, 2.16f, -0.02f), new Vector3(0.46f, 0.16f, 0.46f), friend);
+    }
+
+    private bool BuildPreviewFriend(Vector3 position, Color tint)
+    {
+#if UNITY_EDITOR
+        GameObject npcAsset = AssetDatabase.LoadAssetAtPath<GameObject>(NpcPreviewModelPath);
+        if (npcAsset == null)
+        {
+            return false;
+        }
+
+        GameObject npcInstance = Instantiate(npcAsset, root.transform);
+        npcInstance.name = "FriendNPC_Preview";
+        npcInstance.transform.position = position;
+        npcInstance.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+        npcInstance.transform.localScale = new Vector3(0.78f, 0.78f, 0.78f);
+        foreach (Renderer renderer in npcInstance.GetComponentsInChildren<Renderer>())
+        {
+            renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+        }
+
+        return true;
+#else
+        return false;
+#endif
     }
 
     private void BuildSaunaWorker(Vector3 position)
